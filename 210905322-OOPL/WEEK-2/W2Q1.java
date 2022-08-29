@@ -3,15 +3,24 @@ class W2Q1
 {
     public static void main(String[] args)
      {  
-                int arr[] ={3,60,35,2,45,320,5};
 
-                int n = arr.length; 
-                int temp = 0;  
+                int c, n, search, arr[],temp=0;  
+   
+                Scanner in = new Scanner(System.in);  
+                System.out.println("Enter number of elements");  
+                n = in.nextInt();   
+                arr = new int[n];  
+   
+                System.out.println("Enter those " + n + " elements");  
+   
+                for (c = 0; c < n; c++)  
+                    arr[c] = in.nextInt();
                  
                 System.out.println("Array Before Bubble Sort");  
-                for(int i=0; i < arr.length; i++){  
+                for(int i=0; i < n; i++){  
                         System.out.print(arr[i] + " ");  
-                }  
+                }
+
                 System.out.println();  
 
                   
@@ -30,7 +39,7 @@ class W2Q1
        		     } 
 
        		    System.out.println("Array in ascending order : ");  
-                for(int i=0; i < arr.length; i++)
+                for(int i=0; i < n; i++)
                 {  
                         System.out.print(arr[i] + " "); 
                 }  
@@ -53,15 +62,10 @@ class W2Q1
        		     } 
 
        		    System.out.println("Array in descending order : ");  
-                for(int i=0; i < arr.length; i++)
+                for(int i=0; i < n; i++)
                 {  
                         System.out.print(arr[i] + " "); 
                 }
-
-
-
-
-
     }
 }
                   
