@@ -84,7 +84,7 @@ class Student {
     }
 }
 
-class Q2SortingStudents {
+class W5Q2 {
     public static void main(String args[]) {
         Scanner sc = new Scanner(System.in);
         System.out.print("Enter number of students ");
