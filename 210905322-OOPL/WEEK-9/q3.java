@@ -1,71 +1,99 @@
-import java.util.Scanner;
-
-class NewThread implements Runnable {
-    static int goods,end;
-    String name;
-    Thread t;
-    int type,rate;
-
-    NewThread(String s,int ty,int r,int g) {
-        name = s;
-        type = ty;
-        rate = r;
-        goods = g;
-        end=-1;
-        t = new Thread(this,name);
-        t.start();
-    }
-
-    public void run() {
-        // Q3ProducerConsumer obj = new Q3ProducerConsumer();
-        if (type == 1) {
-            //producer
-            while (end == -1) {
-                try {
-                    Thread.sleep(rate);
-                    if (end != -1)
-                        break;
-                    goods+=1;
-                    System.out.println("Producer produced a good. Goods: "+goods);
-                }
-                catch(InterruptedException e) {
-                    System.out.println("Interrupted");
-                }
+import java.util.*;
+class Shop
+{
+    int contents;
+    boolean available = false;
+    synchronized int get() 
+    {
+        while (available == false)
+        {
+            try
+            {
+                wait();
             }
+            catch (InterruptedException e){}
         }
-        else {
-            //consumer
-            while (end == -1) {
-                try {
-                    Thread.sleep(rate);
-                    if (goods == 0) {
-                        System.out.println("Goods ran out");
-                        end = 1;
-                        break;
-                    }
-                    goods-=1;
-                    System.out.println("Consumer consumed a good. Goods: "+goods);
-                }
-                catch(InterruptedException e) {
-                    System.out.println("Interrupted");
-                }
+        available = false;
+        notify();
+        return contents;
+    }
+    synchronized void put(int value)
+    {
+        while (available == true)
+        {
+            try
+            {
+                wait();
             }
+            catch(InterruptedException e) { }
+        }
+        contents = value;
+        available = true;
+        notify();
+    }
+}
+class Consumer extends Thread
+{
+    Shop Shop;
+    int max;
+    Consumer(Shop c,int max)
+    {
+        Shop = c;
+        this.max=max;
+    }
+    public void run()
+    {
+        int value = 0;
+        for (int i = 0; i < max; i++)
+        {
+            value = Shop.get();
+            System.out.println("Consumed " + value);
         }
     }
 }
-
-public class q3 {
-    public static void main(String args[]) {
-        Scanner sc = new Scanner(System.in);
-        System.out.print("Enter number of initial goods available: ");
-        int g = sc.nextInt();
-        System.out.print("Enter speed of producer (in ms) ");
-        int pr = sc.nextInt();
-        System.out.print("Enter speed of consumer (in ms) ");
-        int cr = sc.nextInt();
-
-        NewThread producer = new NewThread("Producer",1,pr,g);
-        NewThread consumer = new NewThread("Consumer", 2, cr, g);
+class Producer extends Thread {
+    Shop Shop;
+    int max;
+    Producer(Shop c,int max)
+    {
+        Shop = c;
+        this.max=max;
     }
-    
+    public void run()
+    {
+        for (int i = 0; i < max; i++)
+        {
+            Shop.put(i);
+            System.out.println("Producer " + i);
+            try
+            {
+                sleep(500);
+            }
+            catch(InterruptedException e) { }
+        }
+    }
+}
+class q3
+{
+    public static void main(String[] args)
+    {
+        Scanner sc = new Scanner(System.in);
+        Shop c = new Shop();
+        System.out.println("Enter Max Value : ");
+        int max=sc.nextInt();
+        Producer p1 = new Producer(c,max);
+        Consumer c1 = new Consumer(c,max);
+        p1.start();
+        c1.start();
+        int tt=max*500;
+        try
+        {
+            Thread.sleep(tt);
+        }
+        catch(InterruptedException e)
+        {
+            System.out.println("Interrupting Main Thread");
+        }
+        System.out.println("Exiting Main Thread");
+    }
 }
